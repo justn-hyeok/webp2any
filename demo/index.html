@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>webp2any Demo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      background: #f5f5f5;
+    }
+
+    h1 {
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    .upload-section {
+      border: 2px dashed #ddd;
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s;
+    }
+
+    .upload-section:hover {
+      border-color: #007bff;
+      background: #f8f9fa;
+    }
+
+    .upload-section.dragover {
+      border-color: #28a745;
+      background: #e9f7ef;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    label {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: #007bff;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    label:hover {
+      background: #0056b3;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .option-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .option-group label {
+      padding: 0;
+      background: none;
+      color: #333;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: default;
+    }
+
+    select, input[type="number"], input[type="range"] {
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .range-value {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: #28a745;
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #218838;
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: #5a6268;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .results {
+      margin-top: 2rem;
+    }
+
+    .file-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 4px;
+      gap: 1rem;
+    }
+
+    .file-info {
+      flex: 1;
+    }
+
+    .file-name {
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+
+    .file-meta {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .file-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-small {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+
+    .status {
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .status.processing {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+
+    .preview {
+      max-width: 100px;
+      max-height: 100px;
+      border-radius: 4px;
+      object-fit: cover;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+
+      .options {
+        grid-template-columns: 1fr;
+      }
+
+      .file-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>webp2any Demo</h1>
+  <p class="subtitle">Convert WebP images to PNG or JPEG in your browser</p>
+
+  <div class="container">
+    <div class="upload-section" id="dropZone">
+      <p style="margin-bottom: 1rem; color: #666;">Drag & drop WebP files here or click to select</p>
+      <label for="fileInput">Choose WebP Files</label>
+      <input type="file" id="fileInput" accept="image/webp" multiple>
+    </div>
+
+    <div class="options">
+      <div class="option-group">
+        <label>Output Format</label>
+        <select id="format">
+          <option value="png">PNG</option>
+          <option value="jpeg">JPEG</option>
+        </select>
+      </div>
+
+      <div class="option-group">
+        <label>JPEG Quality</label>
+        <input type="range" id="quality" min="0" max="100" value="90" step="5">
+        <span class="range-value"><span id="qualityValue">90</span>%</span>
+      </div>
+
+      <div class="option-group">
+        <label>Max Width (px)</label>
+        <input type="number" id="maxWidth" placeholder="No limit" min="1">
+      </div>
+
+      <div class="option-group">
+        <label>Max Height (px)</label>
+        <input type="number" id="maxHeight" placeholder="No limit" min="1">
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn-primary" id="convertBtn" disabled>Convert Images</button>
+      <button class="btn-secondary" id="clearBtn" disabled>Clear All</button>
+    </div>
+  </div>
+
+  <div class="results" id="results" style="display: none;">
+    <div class="container">
+      <h2 style="margin-bottom: 1rem;">Results</h2>
+      <div class="file-list" id="fileList"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { webp2any, webp2png, webp2jpg, convertBatch, getImageSize, downloadBlob } from '../src/index.js';
+
+    // 테스트를 위해 전역으로 노출
+    window.webp2any = webp2any;
+    window.webp2png = webp2png;
+    window.webp2jpg = webp2jpg;
+    window.convertBatch = convertBatch;
+    window.getImageSize = getImageSize;
+    window.downloadBlob = downloadBlob;
+
+    // 모듈 로드 완료 표시
+    window.webp2anyLoaded = true;
+
+    const fileInput = document.getElementById('fileInput');
+    const dropZone = document.getElementById('dropZone');
+    const convertBtn = document.getElementById('convertBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const formatSelect = document.getElementById('format');
+    const qualityInput = document.getElementById('quality');
+    const qualityValue = document.getElementById('qualityValue');
+    const maxWidthInput = document.getElementById('maxWidth');
+    const maxHeightInput = document.getElementById('maxHeight');
+    const results = document.getElementById('results');
+    const fileList = document.getElementById('fileList');
+
+    let selectedFiles = [];
+
+    // Quality slider update
+    qualityInput.addEventListener('input', (e) => {
+      qualityValue.textContent = e.target.value;
+    });
+
+    // File input handler
+    fileInput.addEventListener('change', (e) => {
+      handleFiles(Array.from(e.target.files));
+    });
+
+    // Drag and drop handlers
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const files = Array.from(e.dataTransfer.files).filter(f => f.type === 'image/webp');
+      handleFiles(files);
+    });
+
+    function handleFiles(files) {
+      if (files.length === 0) return;
+
+      selectedFiles = files;
+      convertBtn.disabled = false;
+      clearBtn.disabled = false;
+      results.style.display = 'block';
+
+      fileList.innerHTML = '';
+
+      files.forEach((file, index) => {
+        const item = document.createElement('div');
+        item.className = 'file-item';
+        item.innerHTML = `
+          <img class="preview" id="preview-${index}">
+          <div class="file-info">
+            <div class="file-name">${file.name}</div>
+            <div class="file-meta" id="meta-${index}">Loading...</div>
+          </div>
+          <div class="status processing" id="status-${index}">Ready</div>
+          <div class="file-actions" id="actions-${index}" style="display: none;"></div>
+        `;
+        fileList.appendChild(item);
+
+        // Preview and get size
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          document.getElementById(`preview-${index}`).src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+
+        getImageSize(file).then(({ width, height }) => {
+          document.getElementById(`meta-${index}`).textContent =
+            `${width}×${height} • ${(file.size / 1024).toFixed(1)} KB`;
+        }).catch(() => {
+          document.getElementById(`meta-${index}`).textContent =
+            `${(file.size / 1024).toFixed(1)} KB`;
+        });
+      });
+    }
+
+    convertBtn.addEventListener('click', async () => {
+      if (selectedFiles.length === 0) return;
+
+      convertBtn.disabled = true;
+      const format = formatSelect.value;
+      const quality = parseInt(qualityInput.value) / 100;
+      const maxWidth = maxWidthInput.value ? parseInt(maxWidthInput.value) : undefined;
+      const maxHeight = maxHeightInput.value ? parseInt(maxHeightInput.value) : undefined;
+
+      const options = {
+        quality: format === 'jpeg' ? quality : undefined,
+        maxWidth,
+        maxHeight,
+        maintainAspectRatio: true
+      };
+
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
+        const statusEl = document.getElementById(`status-${i}`);
+        const actionsEl = document.getElementById(`actions-${i}`);
+
+        try {
+          statusEl.textContent = 'Converting...';
+          statusEl.className = 'status processing';
+
+          const blob = await webp2any(file, format, options);
+
+          statusEl.textContent = `✓ ${(blob.size / 1024).toFixed(1)} KB`;
+          statusEl.className = 'status success';
+
+          const downloadBtn = document.createElement('button');
+          downloadBtn.className = 'btn-primary btn-small';
+          downloadBtn.textContent = 'Download';
+          downloadBtn.onclick = () => {
+            const newName = file.name.replace(/\.webp$/i, `.${format === 'jpeg' ? 'jpg' : 'png'}`);
+            downloadBlob(blob, newName);
+          };
+
+          actionsEl.innerHTML = '';
+          actionsEl.appendChild(downloadBtn);
+          actionsEl.style.display = 'flex';
+        } catch (error) {
+          statusEl.textContent = `✗ ${error.message}`;
+          statusEl.className = 'status error';
+        }
+      }
+
+      convertBtn.disabled = false;
+    });
+
+    clearBtn.addEventListener('click', () => {
+      selectedFiles = [];
+      fileInput.value = '';
+      convertBtn.disabled = true;
+      clearBtn.disabled = true;
+      results.style.display = 'none';
+      fileList.innerHTML = '';
+    });
+  </script>
+</body>
+</html>

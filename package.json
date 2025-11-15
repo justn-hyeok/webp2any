@@ -14,13 +14,14 @@
     "webp",
     "png",
     "jpeg",
+    "jpg",
     "converter",
     "image",
     "canvas",
     "browser",
     "zero-dependency"
   ],
-  "author": "",
+  "author": "justn-hyeok",
   "license": "MIT",
   "engines": {
     "node": ">=14.0.0"

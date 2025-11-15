@@ -17,7 +17,7 @@
     "demo": "bun --bun serve demo",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
-    "prepublishOnly": "bun test"
+    "prepublishOnly": "playwright test"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,28 @@
+{
+  "name": "webp2any",
+  "version": "1.0.0",
+  "description": "Zero-dependency WebP to PNG/JPEG converter for browsers using Canvas API",
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "webp",
+    "png",
+    "jpeg",
+    "converter",
+    "image",
+    "canvas",
+    "browser",
+    "zero-dependency"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

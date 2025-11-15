@@ -8,13 +8,25 @@
     ".": "./src/index.js"
   },
   "files": [
-    "src"
+    "src",
+    "README.md",
+    "README.ko.md",
+    "LICENSE"
   ],
   "scripts": {
     "demo": "bun --bun serve demo",
     "test": "playwright test",
-    "test:ui": "playwright test --ui"
+    "test:ui": "playwright test --ui",
+    "prepublishOnly": "bun test"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/justn-hyeok/webp2any.git"
+  },
+  "bugs": {
+    "url": "https://github.com/justn-hyeok/webp2any/issues"
+  },
+  "homepage": "https://github.com/justn-hyeok/webp2any#readme",
   "keywords": [
     "webp",
     "png",
@@ -24,7 +36,11 @@
     "image",
     "canvas",
     "browser",
-    "zero-dependency"
+    "zero-dependency",
+    "image-conversion",
+    "webp-converter",
+    "browser-api",
+    "client-side"
   ],
   "author": "justn-hyeok",
   "license": "MIT",

@@ -1,0 +1,36 @@
+# Development files
+demo/
+tests/
+.history
+
+# Config files
+playwright.config.js
+.gitignore
+.npmignore
+
+# Test results
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# System files
+.DS_Store
+
+# IDE
+.claude
+
+# Lockfiles
+bun.lock
+package-lock.json
+yarn.lock
+
+# Git
+.git
+.gitignore

@@ -10,6 +10,11 @@
   "files": [
     "src"
   ],
+  "scripts": {
+    "demo": "bun --bun serve demo",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
+  },
   "keywords": [
     "webp",
     "png",
@@ -25,5 +30,9 @@
   "license": "MIT",
   "engines": {
     "node": ">=14.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "serve": "^14.2.5"
   }
 }

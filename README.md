@@ -2,6 +2,8 @@
 
 Zero-dependency WebP to PNG/JPEG converter for browsers using Canvas API.
 
+**English** | [한국어](./README.ko.md)
+
 ## Features
 
 - ✨ Zero dependencies
